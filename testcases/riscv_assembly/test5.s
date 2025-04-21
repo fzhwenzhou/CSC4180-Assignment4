@@ -17,8 +17,8 @@ main:                                   # @main
 	addi	a0, zero, 10
 	sw	a0, 4(sp)
 	addi	s1, zero, 1
-	lui	a0, %hi(.Ltmp0.8793765826018793)
-	addi	s0, a0, %lo(.Ltmp0.8793765826018793)
+	lui	a0, %hi(.Ltmp0.9163038063702247)
+	addi	s0, a0, %lo(.Ltmp0.9163038063702247)
 	lw	a0, 4(sp)
 	blt	a0, s1, .LBB0_2
 .LBB0_1:                                # %while
@@ -501,11 +501,11 @@ print_bool:                             # @print_bool
 .Lfunc_end10:
 	.size	print_bool, .Lfunc_end10-print_bool
                                         # -- End function
-	.type	.Ltmp0.8793765826018793,@object # @tmp0.8793765826018793
+	.type	.Ltmp0.9163038063702247,@object # @tmp0.9163038063702247
 	.section	.rodata,"a",@progbits
-.Ltmp0.8793765826018793:
-	.asciz	"\\n"
-	.size	.Ltmp0.8793765826018793, 3
+.Ltmp0.9163038063702247:
+	.asciz	"\n"
+	.size	.Ltmp0.9163038063702247, 2
 
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1

@@ -574,7 +574,7 @@ def codegen_handler_intliteral(node):
     return ir.Constant(ir.IntType(32), int(node.lexeme))
 
 def codegen_handler_stringliteral(node):
-    s = bytearray((node.lexeme + '\0').encode('utf-8'))
+    s = bytearray((eval(f'"{node.lexeme}"') + '\0').encode('utf-8'))
     return ir.Constant(ir.ArrayType(ir.IntType(8), len(s)), s)
 
 def codegen_handler_id(node):

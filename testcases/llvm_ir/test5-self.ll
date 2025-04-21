@@ -31,7 +31,7 @@ cond:
 while:
   %".7" = load i32, i32* %"value-2"
   call void @"print_int"(i32 %".7")
-  %".9" = getelementptr [3 x i8], [3 x i8]* @"tmp0.8793765826018793", i32 0, i32 0
+  %".9" = getelementptr [2 x i8], [2 x i8]* @"tmp0.9163038063702247", i32 0, i32 0
   call void @"print_string"(i8* %".9")
   %".11" = load i32, i32* %"value-2"
   %".12" = sub i32 %".11", 1
@@ -41,4 +41,4 @@ wend:
   ret i32 0
 }
 
-@"tmp0.8793765826018793" = private constant [3 x i8] c"\5cn\00"
+@"tmp0.9163038063702247" = private constant [2 x i8] c"\0a\00"

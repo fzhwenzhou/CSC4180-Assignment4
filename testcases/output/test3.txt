@@ -1,1 +1,2 @@
-5\ntrue
+5
+true

@@ -16,8 +16,8 @@ main:                                   # @main
 	.cfi_offset s1, -24
 	sw	zero, 4(sp)
 	addi	s1, zero, 9
-	lui	a0, %hi(.Ltmp0.2971586693601399)
-	addi	s0, a0, %lo(.Ltmp0.2971586693601399)
+	lui	a0, %hi(.Ltmp0.7784282332917158)
+	addi	s0, a0, %lo(.Ltmp0.7784282332917158)
 	lw	a0, 4(sp)
 	blt	s1, a0, .LBB0_2
 .LBB0_1:                                # %for
@@ -500,11 +500,11 @@ print_bool:                             # @print_bool
 .Lfunc_end10:
 	.size	print_bool, .Lfunc_end10-print_bool
                                         # -- End function
-	.type	.Ltmp0.2971586693601399,@object # @tmp0.2971586693601399
+	.type	.Ltmp0.7784282332917158,@object # @tmp0.7784282332917158
 	.section	.rodata,"a",@progbits
-.Ltmp0.2971586693601399:
-	.asciz	"\\n"
-	.size	.Ltmp0.2971586693601399, 3
+.Ltmp0.7784282332917158:
+	.asciz	"\n"
+	.size	.Ltmp0.7784282332917158, 2
 
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1

@@ -25,7 +25,7 @@ entry:
   store i32 5, i32* %"y-2"
   %".3" = load i32, i32* %"y-2"
   call void @"print_int"(i32 %".3")
-  %".5" = getelementptr [3 x i8], [3 x i8]* @"tmp0.10916966492901015", i32 0, i32 0
+  %".5" = getelementptr [2 x i8], [2 x i8]* @"tmp0.11125731889526813", i32 0, i32 0
   call void @"print_string"(i8* %".5")
   %".7" = load i32, i32* %"y-2"
   %".8" = icmp sgt i32 %".7", 0
@@ -46,4 +46,4 @@ endif:
   ret i32 0
 }
 
-@"tmp0.10916966492901015" = private constant [3 x i8] c"\5cn\00"
+@"tmp0.11125731889526813" = private constant [2 x i8] c"\0a\00"
