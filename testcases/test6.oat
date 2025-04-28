@@ -1,0 +1,10 @@
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    var x = 15;
+    var y = 16;
+    print_int(add(x, y));
+    return 0;
+}

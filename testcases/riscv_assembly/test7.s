@@ -1,45 +1,58 @@
 	.text
 	.file	"llvm-link"
+	.globl	"fac-1"                 # -- Begin function fac-1
+	.p2align	2
+	.type	"fac-1",@function
+"fac-1":                                # @fac-1
+	.cfi_startproc
+# %bb.0:                                # %entry
+	addi	sp, sp, -16
+	.cfi_def_cfa_offset 16
+	sd	ra, 8(sp)
+	.cfi_offset ra, -8
+	sext.w	a1, a0
+	addi	a2, zero, 1
+	sw	a0, 4(sp)
+	blt	a2, a1, .LBB0_2
+# %bb.1:                                # %then0.9239652165485113
+	addi	a0, zero, 1
+	j	.LBB0_3
+.LBB0_2:                                # %else0.34611750383167805
+	lw	a0, 4(sp)
+	addi	a0, a0, -1
+	call	"fac-1"
+	lw	a1, 4(sp)
+	call	__muldi3
+.LBB0_3:                                # %then0.9239652165485113
+	ld	ra, 8(sp)
+	addi	sp, sp, 16
+	ret
+.Lfunc_end0:
+	.size	"fac-1", .Lfunc_end0-"fac-1"
+	.cfi_endproc
+                                        # -- End function
 	.globl	main                    # -- Begin function main
 	.p2align	2
 	.type	main,@function
 main:                                   # @main
 	.cfi_startproc
 # %bb.0:                                # %entry
-	addi	sp, sp, -32
-	.cfi_def_cfa_offset 32
-	sd	ra, 24(sp)
-	sd	s0, 16(sp)
-	sd	s1, 8(sp)
+	addi	sp, sp, -16
+	.cfi_def_cfa_offset 16
+	sd	ra, 8(sp)
 	.cfi_offset ra, -8
-	.cfi_offset s0, -16
-	.cfi_offset s1, -24
-	sw	zero, 4(sp)
-	addi	s1, zero, 9
-	lui	a0, %hi(.Ltmp0.49591063914178246)
-	addi	s0, a0, %lo(.Ltmp0.49591063914178246)
-	lw	a0, 4(sp)
-	blt	s1, a0, .LBB0_2
-.LBB0_1:                                # %for0.06318192062506767
-                                        # =>This Inner Loop Header: Depth=1
-	lw	a0, 4(sp)
-	call	print_int
-	mv	a0, s0
-	call	print_string
-	lw	a0, 4(sp)
-	addi	a0, a0, 1
+	addi	a0, zero, 5
 	sw	a0, 4(sp)
-	lw	a0, 4(sp)
-	bge	s1, a0, .LBB0_1
-.LBB0_2:                                # %next0.4473734006291459
+	addi	a0, zero, 5
+	call	"fac-1"
+	sext.w	a0, a0
+	call	print_int
 	mv	a0, zero
-	ld	s1, 8(sp)
-	ld	s0, 16(sp)
-	ld	ra, 24(sp)
-	addi	sp, sp, 32
+	ld	ra, 8(sp)
+	addi	sp, sp, 16
 	ret
-.Lfunc_end0:
-	.size	main, .Lfunc_end0-main
+.Lfunc_end1:
+	.size	main, .Lfunc_end1-main
 	.cfi_endproc
                                         # -- End function
 	.globl	oat_malloc              # -- Begin function oat_malloc
@@ -59,8 +72,8 @@ oat_malloc:                             # @oat_malloc
 	ld	ra, 24(sp)
 	addi	sp, sp, 32
 	ret
-.Lfunc_end1:
-	.size	oat_malloc, .Lfunc_end1-oat_malloc
+.Lfunc_end2:
+	.size	oat_malloc, .Lfunc_end2-oat_malloc
                                         # -- End function
 	.globl	oat_alloc_array         # -- Begin function oat_alloc_array
 	.p2align	1
@@ -73,11 +86,11 @@ oat_alloc_array:                        # @oat_alloc_array
 	addi	s0, sp, 32
 	sw	a0, -20(s0)
 	lw	a0, -20(s0)
-	bltz	a0, .LBB2_2
-	j	.LBB2_1
-.LBB2_1:
-	j	.LBB2_3
-.LBB2_2:
+	bltz	a0, .LBB3_2
+	j	.LBB3_1
+.LBB3_1:
+	j	.LBB3_3
+.LBB3_2:
 	lui	a0, %hi(.L.str)
 	addi	a0, a0, %lo(.L.str)
 	lui	a1, %hi(.L.str.1)
@@ -86,7 +99,7 @@ oat_alloc_array:                        # @oat_alloc_array
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.oat_alloc_array)
 	addi	a2, zero, 24
 	call	__assert_fail
-.LBB2_3:
+.LBB3_3:
 	lw	a0, -20(s0)
 	addiw	a0, a0, 1
 	slli	a0, a0, 2
@@ -100,8 +113,8 @@ oat_alloc_array:                        # @oat_alloc_array
 	ld	ra, 24(sp)
 	addi	sp, sp, 32
 	ret
-.Lfunc_end2:
-	.size	oat_alloc_array, .Lfunc_end2-oat_alloc_array
+.Lfunc_end3:
+	.size	oat_alloc_array, .Lfunc_end3-oat_alloc_array
                                         # -- End function
 	.globl	array_of_string         # -- Begin function array_of_string
 	.p2align	1
@@ -114,11 +127,11 @@ array_of_string:                        # @array_of_string
 	addi	s0, sp, 48
 	sd	a0, -24(s0)
 	ld	a0, -24(s0)
-	beqz	a0, .LBB3_2
-	j	.LBB3_1
-.LBB3_1:
-	j	.LBB3_3
-.LBB3_2:
+	beqz	a0, .LBB4_2
+	j	.LBB4_1
+.LBB4_1:
+	j	.LBB4_3
+.LBB4_2:
 	lui	a0, %hi(.L.str.2)
 	addi	a0, a0, %lo(.L.str.2)
 	lui	a1, %hi(.L.str.1)
@@ -127,16 +140,16 @@ array_of_string:                        # @array_of_string
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.array_of_string)
 	addi	a2, zero, 35
 	call	__assert_fail
-.LBB3_3:
+.LBB4_3:
 	ld	a0, -24(s0)
 	call	strlen
 	sw	a0, -28(s0)
 	lw	a0, -28(s0)
-	bltz	a0, .LBB3_5
-	j	.LBB3_4
-.LBB3_4:
-	j	.LBB3_6
-.LBB3_5:
+	bltz	a0, .LBB4_5
+	j	.LBB4_4
+.LBB4_4:
+	j	.LBB4_6
+.LBB4_5:
 	lui	a0, %hi(.L.str.3)
 	addi	a0, a0, %lo(.L.str.3)
 	lui	a1, %hi(.L.str.1)
@@ -145,7 +158,7 @@ array_of_string:                        # @array_of_string
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.array_of_string)
 	addi	a2, zero, 38
 	call	__assert_fail
-.LBB3_6:
+.LBB4_6:
 	lw	a0, -28(s0)
 	addiw	a0, a0, 1
 	slli	a0, a0, 2
@@ -155,13 +168,13 @@ array_of_string:                        # @array_of_string
 	ld	a1, -40(s0)
 	sw	a0, 0(a1)
 	sw	zero, -32(s0)
-	j	.LBB3_7
-.LBB3_7:                                # =>This Inner Loop Header: Depth=1
+	j	.LBB4_7
+.LBB4_7:                                # =>This Inner Loop Header: Depth=1
 	lw	a0, -32(s0)
 	lw	a1, -28(s0)
-	bge	a0, a1, .LBB3_10
-	j	.LBB3_8
-.LBB3_8:                                #   in Loop: Header=BB3_7 Depth=1
+	bge	a0, a1, .LBB4_10
+	j	.LBB4_8
+.LBB4_8:                                #   in Loop: Header=BB4_7 Depth=1
 	ld	a0, -24(s0)
 	lw	a1, -32(s0)
 	add	a0, a0, a1
@@ -171,20 +184,20 @@ array_of_string:                        # @array_of_string
 	slli	a1, a1, 2
 	add	a1, a2, a1
 	sw	a0, 0(a1)
-	j	.LBB3_9
-.LBB3_9:                                #   in Loop: Header=BB3_7 Depth=1
+	j	.LBB4_9
+.LBB4_9:                                #   in Loop: Header=BB4_7 Depth=1
 	lw	a0, -32(s0)
 	addi	a0, a0, 1
 	sw	a0, -32(s0)
-	j	.LBB3_7
-.LBB3_10:
+	j	.LBB4_7
+.LBB4_10:
 	ld	a0, -40(s0)
 	ld	s0, 32(sp)
 	ld	ra, 40(sp)
 	addi	sp, sp, 48
 	ret
-.Lfunc_end3:
-	.size	array_of_string, .Lfunc_end3-array_of_string
+.Lfunc_end4:
+	.size	array_of_string, .Lfunc_end4-array_of_string
                                         # -- End function
 	.globl	string_of_array         # -- Begin function string_of_array
 	.p2align	1
@@ -197,11 +210,11 @@ string_of_array:                        # @string_of_array
 	addi	s0, sp, 48
 	sd	a0, -24(s0)
 	ld	a0, -24(s0)
-	beqz	a0, .LBB4_2
-	j	.LBB4_1
-.LBB4_1:
-	j	.LBB4_3
-.LBB4_2:
+	beqz	a0, .LBB5_2
+	j	.LBB5_1
+.LBB5_1:
+	j	.LBB5_3
+.LBB5_2:
 	lui	a0, %hi(.L.str.4)
 	addi	a0, a0, %lo(.L.str.4)
 	lui	a1, %hi(.L.str.1)
@@ -210,16 +223,16 @@ string_of_array:                        # @string_of_array
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.string_of_array)
 	addi	a2, zero, 53
 	call	__assert_fail
-.LBB4_3:
+.LBB5_3:
 	ld	a0, -24(s0)
 	lw	a0, 0(a0)
 	sw	a0, -28(s0)
 	lw	a0, -28(s0)
-	bltz	a0, .LBB4_5
-	j	.LBB4_4
-.LBB4_4:
-	j	.LBB4_6
-.LBB4_5:
+	bltz	a0, .LBB5_5
+	j	.LBB5_4
+.LBB5_4:
+	j	.LBB5_6
+.LBB5_5:
 	lui	a0, %hi(.L.str.3)
 	addi	a0, a0, %lo(.L.str.3)
 	lui	a1, %hi(.L.str.1)
@@ -228,19 +241,19 @@ string_of_array:                        # @string_of_array
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.string_of_array)
 	addi	a2, zero, 56
 	call	__assert_fail
-.LBB4_6:
+.LBB5_6:
 	lw	a0, -28(s0)
 	addiw	a0, a0, 1
 	call	malloc
 	sd	a0, -40(s0)
 	sw	zero, -32(s0)
-	j	.LBB4_7
-.LBB4_7:                                # =>This Inner Loop Header: Depth=1
+	j	.LBB5_7
+.LBB5_7:                                # =>This Inner Loop Header: Depth=1
 	lw	a0, -32(s0)
 	lw	a1, -28(s0)
-	bge	a0, a1, .LBB4_13
-	j	.LBB4_8
-.LBB4_8:                                #   in Loop: Header=BB4_7 Depth=1
+	bge	a0, a1, .LBB5_13
+	j	.LBB5_8
+.LBB5_8:                                #   in Loop: Header=BB5_7 Depth=1
 	ld	a0, -24(s0)
 	lw	a1, -32(s0)
 	addiw	a2, a1, 1
@@ -254,11 +267,11 @@ string_of_array:                        # @string_of_array
 	lw	a1, -32(s0)
 	add	a0, a0, a1
 	lbu	a0, 0(a0)
-	beqz	a0, .LBB4_10
-	j	.LBB4_9
-.LBB4_9:                                #   in Loop: Header=BB4_7 Depth=1
-	j	.LBB4_11
-.LBB4_10:
+	beqz	a0, .LBB5_10
+	j	.LBB5_9
+.LBB5_9:                                #   in Loop: Header=BB5_7 Depth=1
+	j	.LBB5_11
+.LBB5_10:
 	lui	a0, %hi(.L.str.5)
 	addi	a0, a0, %lo(.L.str.5)
 	lui	a1, %hi(.L.str.1)
@@ -267,14 +280,14 @@ string_of_array:                        # @string_of_array
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.string_of_array)
 	addi	a2, zero, 62
 	call	__assert_fail
-.LBB4_11:                               #   in Loop: Header=BB4_7 Depth=1
-	j	.LBB4_12
-.LBB4_12:                               #   in Loop: Header=BB4_7 Depth=1
+.LBB5_11:                               #   in Loop: Header=BB5_7 Depth=1
+	j	.LBB5_12
+.LBB5_12:                               #   in Loop: Header=BB5_7 Depth=1
 	lw	a0, -32(s0)
 	addi	a0, a0, 1
 	sw	a0, -32(s0)
-	j	.LBB4_7
-.LBB4_13:
+	j	.LBB5_7
+.LBB5_13:
 	ld	a0, -40(s0)
 	lw	a1, -28(s0)
 	add	a0, a0, a1
@@ -284,8 +297,8 @@ string_of_array:                        # @string_of_array
 	ld	ra, 40(sp)
 	addi	sp, sp, 48
 	ret
-.Lfunc_end4:
-	.size	string_of_array, .Lfunc_end4-string_of_array
+.Lfunc_end5:
+	.size	string_of_array, .Lfunc_end5-string_of_array
                                         # -- End function
 	.globl	length_of_string        # -- Begin function length_of_string
 	.p2align	1
@@ -298,11 +311,11 @@ length_of_string:                       # @length_of_string
 	addi	s0, sp, 32
 	sd	a0, -24(s0)
 	ld	a0, -24(s0)
-	beqz	a0, .LBB5_2
-	j	.LBB5_1
-.LBB5_1:
-	j	.LBB5_3
-.LBB5_2:
+	beqz	a0, .LBB6_2
+	j	.LBB6_1
+.LBB6_1:
+	j	.LBB6_3
+.LBB6_2:
 	lui	a0, %hi(.L.str.2)
 	addi	a0, a0, %lo(.L.str.2)
 	lui	a1, %hi(.L.str.1)
@@ -311,7 +324,7 @@ length_of_string:                       # @length_of_string
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.length_of_string)
 	addi	a2, zero, 70
 	call	__assert_fail
-.LBB5_3:
+.LBB6_3:
 	ld	a0, -24(s0)
 	call	strlen
 	sext.w	a0, a0
@@ -319,8 +332,8 @@ length_of_string:                       # @length_of_string
 	ld	ra, 24(sp)
 	addi	sp, sp, 32
 	ret
-.Lfunc_end5:
-	.size	length_of_string, .Lfunc_end5-length_of_string
+.Lfunc_end6:
+	.size	length_of_string, .Lfunc_end6-length_of_string
                                         # -- End function
 	.globl	string_of_int           # -- Begin function string_of_int
 	.p2align	1
@@ -362,8 +375,8 @@ string_of_int:                          # @string_of_int
 	ld	ra, 40(sp)
 	addi	sp, sp, 48
 	ret
-.Lfunc_end6:
-	.size	string_of_int, .Lfunc_end6-string_of_int
+.Lfunc_end7:
+	.size	string_of_int, .Lfunc_end7-string_of_int
                                         # -- End function
 	.globl	string_cat              # -- Begin function string_cat
 	.p2align	1
@@ -409,8 +422,8 @@ string_cat:                             # @string_cat
 	ld	ra, 56(sp)
 	addi	sp, sp, 64
 	ret
-.Lfunc_end7:
-	.size	string_cat, .Lfunc_end7-string_cat
+.Lfunc_end8:
+	.size	string_cat, .Lfunc_end8-string_cat
                                         # -- End function
 	.globl	print_string            # -- Begin function print_string
 	.p2align	1
@@ -423,11 +436,11 @@ print_string:                           # @print_string
 	addi	s0, sp, 32
 	sd	a0, -24(s0)
 	ld	a0, -24(s0)
-	beqz	a0, .LBB8_2
-	j	.LBB8_1
-.LBB8_1:
-	j	.LBB8_3
-.LBB8_2:
+	beqz	a0, .LBB9_2
+	j	.LBB9_1
+.LBB9_1:
+	j	.LBB9_3
+.LBB9_2:
 	lui	a0, %hi(.L.str.2)
 	addi	a0, a0, %lo(.L.str.2)
 	lui	a1, %hi(.L.str.1)
@@ -436,7 +449,7 @@ print_string:                           # @print_string
 	addi	a3, a2, %lo(.L__PRETTY_FUNCTION__.print_string)
 	addi	a2, zero, 95
 	call	__assert_fail
-.LBB8_3:
+.LBB9_3:
 	ld	a1, -24(s0)
 	lui	a0, %hi(.L.str.7)
 	addi	a0, a0, %lo(.L.str.7)
@@ -445,8 +458,8 @@ print_string:                           # @print_string
 	ld	ra, 24(sp)
 	addi	sp, sp, 32
 	ret
-.Lfunc_end8:
-	.size	print_string, .Lfunc_end8-print_string
+.Lfunc_end9:
+	.size	print_string, .Lfunc_end9-print_string
                                         # -- End function
 	.globl	print_int               # -- Begin function print_int
 	.p2align	1
@@ -466,8 +479,8 @@ print_int:                              # @print_int
 	ld	ra, 24(sp)
 	addi	sp, sp, 32
 	ret
-.Lfunc_end9:
-	.size	print_int, .Lfunc_end9-print_int
+.Lfunc_end10:
+	.size	print_int, .Lfunc_end10-print_int
                                         # -- End function
 	.globl	print_bool              # -- Begin function print_bool
 	.p2align	1
@@ -480,32 +493,26 @@ print_bool:                             # @print_bool
 	addi	s0, sp, 32
 	sw	a0, -20(s0)
 	lw	a0, -20(s0)
-	bnez	a0, .LBB10_2
-	j	.LBB10_1
-.LBB10_1:
+	bnez	a0, .LBB11_2
+	j	.LBB11_1
+.LBB11_1:
 	lui	a0, %hi(.L.str.8)
 	addi	a0, a0, %lo(.L.str.8)
 	call	printf
-	j	.LBB10_3
-.LBB10_2:
+	j	.LBB11_3
+.LBB11_2:
 	lui	a0, %hi(.L.str.9)
 	addi	a0, a0, %lo(.L.str.9)
 	call	printf
-	j	.LBB10_3
-.LBB10_3:
+	j	.LBB11_3
+.LBB11_3:
 	ld	s0, 16(sp)
 	ld	ra, 24(sp)
 	addi	sp, sp, 32
 	ret
-.Lfunc_end10:
-	.size	print_bool, .Lfunc_end10-print_bool
+.Lfunc_end11:
+	.size	print_bool, .Lfunc_end11-print_bool
                                         # -- End function
-	.type	.Ltmp0.49591063914178246,@object # @tmp0.49591063914178246
-	.section	.rodata,"a",@progbits
-.Ltmp0.49591063914178246:
-	.asciz	"\n"
-	.size	.Ltmp0.49591063914178246, 2
-
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .L.str:

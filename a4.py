@@ -371,6 +371,7 @@ def codegen(node):
     Args:
         node(TreeNode)
     """
+    module.triple = 'riscv64'
     codegen_func_map = {
         NodeType.GLOBAL_DECL: codegen_handler_global_decl,
         # TODO: add more mappings from NodeType to its handler function of IR generation
@@ -382,7 +383,8 @@ def codegen(node):
         NodeType.PLUS: codegen_handler_plus,
         NodeType.IF_STMT: codegen_handler_if,
         NodeType.FOR_LOOP: codegen_handler_for,
-        NodeType.WHILE_LOOP: codegen_handler_while
+        NodeType.WHILE_LOOP: codegen_handler_while,
+        NodeType.STAR: codegen_handler_star
     }
     codegen_func = codegen_func_map.get(node.nodetype)
     if codegen_func:
@@ -420,7 +422,17 @@ def codegen_handler_func_decl(node):
     ir_map[func_name] = func
     block = func.append_basic_block(name='entry')
     builder = ir.IRBuilder(block)
+    for param_node, arg in zip(node.children[2].children, func.args):
+        param_name = param_node.children[1].id
+        ptr = builder.alloca(arg.type)
+        builder.store(arg, ptr)
+        ir_map[param_name] = ptr
     codegen_handler_default(node)
+    if not builder.block.is_terminated:
+        if func.type.pointee.return_type == ir.VoidType():
+            builder.ret_void()
+        else:
+            builder.ret(ir.Constant(func.type.pointee.return_type, 0))
     
 def codegen_handler_var_decl(node):
     global builder
@@ -470,12 +482,17 @@ def codegen_handler_minus(node):
     lhs, rhs = map(codegen_eval_expr, node.children)
     return builder.sub(lhs, rhs)
 
+def codegen_handler_star(node):
+    global builder
+    lhs, rhs = map(codegen_eval_expr, node.children)
+    return builder.mul(lhs, rhs)
+
 def codegen_handler_if(node):
     global builder
     
-    then_block = builder.append_basic_block('then')
-    else_block = builder.append_basic_block('else')
-    endif_block = builder.append_basic_block('endif')
+    then_block = builder.append_basic_block(f'then{random()}')
+    else_block = builder.append_basic_block(f'else{random()}')
+    endif_block = builder.append_basic_block(f'endif{random()}')
     
     cond_val = codegen_eval_expr(node.children[0])
     
@@ -489,19 +506,21 @@ def codegen_handler_if(node):
     
     builder.position_at_end(then_block)
     codegen(node.children[1]) 
-    builder.branch(endif_block)
+    if not builder.block.is_terminated:
+        builder.branch(endif_block)
 
     builder.position_at_end(else_block)
     codegen(node.children[2]) 
-    builder.branch(endif_block) 
+    if not builder.block.is_terminated:
+        builder.branch(endif_block) 
     
     builder.position_at_end(endif_block)
 
 def codegen_handler_while(node):
     global builder
-    cond_block = builder.append_basic_block('cond')
-    while_block = builder.append_basic_block('while')
-    wend_block = builder.append_basic_block('wend')
+    cond_block = builder.append_basic_block(f'cond{random()}')
+    while_block = builder.append_basic_block(f'while{random()}')
+    wend_block = builder.append_basic_block(f'wend{random()}')
     builder.branch(cond_block)
     
     builder.position_at_end(cond_block)
@@ -518,7 +537,8 @@ def codegen_handler_while(node):
     
     builder.position_at_end(while_block)
     codegen(node.children[1])
-    builder.branch(cond_block)
+    if not builder.block.is_terminated:
+        builder.branch(cond_block)
     
     builder.position_at_end(wend_block)
     
@@ -526,9 +546,9 @@ def codegen_handler_while(node):
 
 def codegen_handler_for(node):
     global builder
-    cond_block = builder.append_basic_block('cond')
-    for_block = builder.append_basic_block('for')
-    next_block = builder.append_basic_block('next')
+    cond_block = builder.append_basic_block(f'cond{random()}')
+    for_block = builder.append_basic_block(f'for{random()}')
+    next_block = builder.append_basic_block(f'next{random()}')
     
     codegen(node.children[0])
     
@@ -548,8 +568,8 @@ def codegen_handler_for(node):
     builder.position_at_end(for_block)
     codegen(node.children[3])
     codegen(node.children[2])
-    
-    builder.branch(cond_block)
+    if not builder.block.is_terminated:
+        builder.branch(cond_block)
     
     builder.position_at_end(next_block)
     
@@ -605,6 +625,10 @@ def codegen_eval_expr(node):
         return codegen_handler_great(node)
     elif node.nodetype == NodeType.LESS:
         return codegen_handler_less(node)
+    elif node.nodetype == NodeType.FUNC_CALL:
+        return codegen_handler_func_call(node)
+    elif node.nodetype == NodeType.STAR:
+        return codegen_handler_star(node)
     else:
         return codegen_eval_expr(node.children[0])
 
@@ -634,6 +658,7 @@ def semantic_analysis(node):
         NodeType.FUNC_DECL: semantic_handler_func_decl,
         NodeType.VAR_DECL: semantic_handler_var_decl,
         NodeType.STMTS: semantic_handler_stmts,
+        NodeType.ARG: semantic_handler_arg_decl
     }
     int_arith = (
         NodeType.PLUS,
@@ -711,10 +736,11 @@ def semantic_handler_func_decl(node):
         raise ValueError('Wrong format for Function Declarations')
     type, id, args, stmts = node.children
     semantic_analysis(type)
-    semantic_analysis(args)
-    semantic_analysis(stmts)
     id.datatype = stmts.datatype = type.datatype
     id.id = symbol_table.insert(id.lexeme, id.datatype)
+    stmts.children = args.children + stmts.children
+    semantic_analysis(stmts)
+    stmts.children = stmts.children[len(args.children):]
 
 def semantic_handler_var_decl(node):
     if len(node.children) != 2:
@@ -722,6 +748,14 @@ def semantic_handler_var_decl(node):
     id, expr = node.children
     semantic_analysis(expr)
     id.datatype = expr.datatype
+    id.id = symbol_table.insert(id.lexeme, id.datatype)
+
+def semantic_handler_arg_decl(node):
+    if len(node.children) != 2:
+        raise ValueError('Wrong format for Argument Declarations')
+    typ, id = node.children
+    semantic_analysis(typ)
+    id.datatype = typ.datatype
     id.id = symbol_table.insert(id.lexeme, id.datatype)
 
 def semantic_handler_stmts(node):

@@ -17,11 +17,11 @@ main:                                   # @main
 	addi	a0, zero, 10
 	sw	a0, 4(sp)
 	addi	s1, zero, 1
-	lui	a0, %hi(.Ltmp0.9163038063702247)
-	addi	s0, a0, %lo(.Ltmp0.9163038063702247)
+	lui	a0, %hi(.Ltmp0.24159074240151268)
+	addi	s0, a0, %lo(.Ltmp0.24159074240151268)
 	lw	a0, 4(sp)
 	blt	a0, s1, .LBB0_2
-.LBB0_1:                                # %while
+.LBB0_1:                                # %while0.3623336600138114
                                         # =>This Inner Loop Header: Depth=1
 	lw	a0, 4(sp)
 	call	print_int
@@ -32,7 +32,7 @@ main:                                   # @main
 	sw	a0, 4(sp)
 	lw	a0, 4(sp)
 	bge	a0, s1, .LBB0_1
-.LBB0_2:                                # %wend
+.LBB0_2:                                # %wend0.5113298770300008
 	mv	a0, zero
 	ld	s1, 8(sp)
 	ld	s0, 16(sp)
@@ -501,11 +501,11 @@ print_bool:                             # @print_bool
 .Lfunc_end10:
 	.size	print_bool, .Lfunc_end10-print_bool
                                         # -- End function
-	.type	.Ltmp0.9163038063702247,@object # @tmp0.9163038063702247
+	.type	.Ltmp0.24159074240151268,@object # @tmp0.24159074240151268
 	.section	.rodata,"a",@progbits
-.Ltmp0.9163038063702247:
+.Ltmp0.24159074240151268:
 	.asciz	"\n"
-	.size	.Ltmp0.9163038063702247, 2
+	.size	.Ltmp0.24159074240151268, 2
 
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1

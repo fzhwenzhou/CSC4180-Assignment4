@@ -11,6 +11,12 @@ Usage: python3 ./a4.py <.dot> <.png after> <.ll>
 ```
 For the first one, it will only convert the dot file to its PNG representation. For the second one, it will perform semantic analysis on the input abstract syntax tree, and use code generation to generate LLVM IR code. 
 
+To test all the testcases in one command, simply run:
+```bash
+bash verify.sh
+```
+And it will automatically compile and run all testcases, including bonus parts. The generated LLVM IRs will be under `testcases/llvm_ir` folder, and the generated semantic tree should be under `testcases/ast` folder. The outputs will be in `testcases/output` folder. 
+
 ## Basic Requirements
 Here, I strictly follow the template to implement the semantic analyzer and IR generator. Apart from the functions defined in the template, I have defined the following functions:
 - `semantic_handler_global_decl`: Call the `semantic_handler_var_decl` function, as they share the same implementation. The only difference is that global declarations put variables in the global scope, while the local declarations put variables in some levels of the local scope. 
@@ -259,3 +265,28 @@ attributes #1 = { inaccessiblememonly nounwind willreturn }
 ```
 
 # Bonus
+For the bonus part, I have implemented functions with parameters and recursive functions. A sample of ordinary function with parameter is `test6.oat`. A sample of recursive function is `test7.oat`. 
+
+To achieve running `test6.oat`, some of the following functions should be modified:
+- `semantic_handler_func_decl`: Here, the declaration of the function parameters should be inside the statements, and as the first statements of the statements block. It is just like the K&B C function declarations as follows:
+```
+int add(a, b) 
+{
+  int a, b;
+}
+{
+  return a + b;
+}
+```
+So, it will append the argument declaration statements before the statements, and perform semantic analysis. After that, to keep the original tree, it will again remove the declaration statements from the statements.
+- `semantic_handler_arg`: Here, it will get the data type of the first child, that is, the data type, and then set the data type of ID to the specific data type.
+- `codegen_handler_func_decl`: Here, it will get all the arguments from the tree and the LLVM IR builder. It will iterate through all the arguments, store them into different locations of the stack memory (simulating stack-based parameter passing like x86), and store the pointers to the IR variable map. 
+- `codegen_eval_expr`: Add the statements to perform function calls and get the return value.
+
+
+To achieve running `test7.oat`, some more modifications will be performed:
+- `semantic_handler_func_decl`: Add the function name to the symbol table before performing semantic analysis towards statements. This ensures that recursive functions perform correctly.
+- `codegen_handler_star`: Handle multiplication operations.
+- `codegen_eval_expr`: Add the multiplication operations.
+- `codegen_handler_func_decl`: Add some code after the function declaration. If there is no statement in the last block, that is, if the block is not terminated, add default return statement to it.
+- `codegen_handler_if/for/while`: Add some judgement. If the block is not terminated, jump to the endif block. That is, it would avoid returning or jumping out of the basic block in the middle. 

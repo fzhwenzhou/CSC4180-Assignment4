@@ -18,24 +18,24 @@ main:                                   # @main
 	sw	a0, -20(s0)
 	addi	a0, zero, 5
 	call	print_int
-	lui	a0, %hi(.Ltmp0.11125731889526813)
-	addi	a0, a0, %lo(.Ltmp0.11125731889526813)
+	lui	a0, %hi(.Ltmp0.9878587972744131)
+	addi	a0, a0, %lo(.Ltmp0.9878587972744131)
 	call	print_string
 	lw	a1, -20(s0)
 	addi	a0, zero, 1
 	blt	a1, a0, .LBB0_2
-# %bb.1:                                # %then
+# %bb.1:                                # %then0.5314568631158353
 	mv	a1, sp
 	addi	sp, a1, -16
 	sw	a0, -16(a1)
 	addi	a0, zero, 1
 	j	.LBB0_3
-.LBB0_2:                                # %else
+.LBB0_2:                                # %else0.8092935971335848
 	mv	a0, sp
 	addi	sp, a0, -16
 	sw	zero, -16(a0)
 	mv	a0, zero
-.LBB0_3:                                # %endif
+.LBB0_3:                                # %endif0.5886231480321878
 	call	print_bool
 	mv	a0, zero
 	addi	sp, s0, -32
@@ -505,11 +505,11 @@ print_bool:                             # @print_bool
 .Lfunc_end10:
 	.size	print_bool, .Lfunc_end10-print_bool
                                         # -- End function
-	.type	.Ltmp0.11125731889526813,@object # @tmp0.11125731889526813
+	.type	.Ltmp0.9878587972744131,@object # @tmp0.9878587972744131
 	.section	.rodata,"a",@progbits
-.Ltmp0.11125731889526813:
+.Ltmp0.9878587972744131:
 	.asciz	"\n"
-	.size	.Ltmp0.11125731889526813, 2
+	.size	.Ltmp0.9878587972744131, 2
 
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1

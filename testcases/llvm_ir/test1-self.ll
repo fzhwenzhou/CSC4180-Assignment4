@@ -1,5 +1,5 @@
 ; ModuleID = ""
-target triple = "unknown-unknown-unknown"
+target triple = "riscv64"
 target datalayout = ""
 
 declare i32* @"array_of_string"(i8* %".1") 
